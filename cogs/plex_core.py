@@ -7,6 +7,7 @@ import os
 import logging
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any, List, Tuple
+from urllib.parse import urlparse
 
 from dotenv import load_dotenv
 
@@ -458,6 +459,11 @@ class PlexCore(commands.Cog):
         except Exception as e:
             self.logger.error(f"Error updating dashboard: {e}")
 
+    # Placeholder icon hosts shipped in older example configs. These never
+    # resolve to an image, so treat them as unset rather than handing Discord
+    # a URL it will render as a broken image.
+    PLACEHOLDER_ICON_HOSTS = {"example.com", "www.example.com"}
+
     def _resolve_icon_url(self, key: str) -> Optional[str]:
         """Resolve a dashboard icon URL, falling back to the bot's own avatar.
 
@@ -465,7 +471,7 @@ class PlexCore(commands.Cog):
         unset or placeholder value in config.json renders as a broken image.
         """
         url = (self.config.get("dashboard", {}).get(key) or "").strip()
-        if url:
+        if url and urlparse(url).hostname not in self.PLACEHOLDER_ICON_HOSTS:
             return url
         return self.bot.user.display_avatar.url if self.bot.user else None
 
