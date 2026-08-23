@@ -1,8 +1,8 @@
 {
     "dashboard": {
         "name": "Your Plex Dashboard",
-        "icon_url": "https://example.com/icon.png",
-        "footer_icon_url": "https://example.com/icon.png"
+        "icon_url": "",
+        "footer_icon_url": ""
     },
     "plex_sections": {
         "show_all": false,

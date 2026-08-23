@@ -458,6 +458,17 @@ class PlexCore(commands.Cog):
         except Exception as e:
             self.logger.error(f"Error updating dashboard: {e}")
 
+    def _resolve_icon_url(self, key: str) -> Optional[str]:
+        """Resolve a dashboard icon URL, falling back to the bot's own avatar.
+
+        Discord silently drops an embed icon whose URL it cannot fetch, so an
+        unset or placeholder value in config.json renders as a broken image.
+        """
+        url = (self.config.get("dashboard", {}).get(key) or "").strip()
+        if url:
+            return url
+        return self.bot.user.display_avatar.url if self.bot.user else None
+
     async def create_dashboard_embed(self, info: Dict[str, Any]) -> discord.Embed:
         """Create a dashboard embed reflecting server status."""
         dashboard_config = self.config["dashboard"]
@@ -492,9 +503,10 @@ class PlexCore(commands.Cog):
         else:
             await self._add_embed_fields(embed, info)
 
-        embed.set_author(name=dashboard_config["name"], icon_url=dashboard_config["icon_url"])
-        embed.set_thumbnail(url=dashboard_config["icon_url"])
-        embed.set_footer(text="Last updated", icon_url=dashboard_config["footer_icon_url"])
+        icon_url = self._resolve_icon_url("icon_url")
+        embed.set_author(name=dashboard_config.get("name", "Plex Dashboard"), icon_url=icon_url)
+        embed.set_thumbnail(url=icon_url)
+        embed.set_footer(text="🔄", icon_url=self._resolve_icon_url("footer_icon_url"))
         return embed
 
     async def _add_embed_fields(self, embed: discord.Embed, info: Dict[str, Any]) -> None:

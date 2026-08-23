@@ -166,8 +166,8 @@ PlexWatch is customized via `/data/config.json`. Below is the structure with exa
 {
     "dashboard": {
         "name": "Your Plex Dashboard",
-        "icon_url": "https://example.com/icon.png",
-        "footer_icon_url": "https://example.com/icon.png"
+        "icon_url": "",
+        "footer_icon_url": ""
     },
     "plex_sections": {
         "show_all": false,
@@ -217,8 +217,10 @@ PlexWatch is customized via `/data/config.json`. Below is the structure with exa
 ### Configuration Details
 - **`dashboard`**:
   - `name`: Title of the Discord embed (e.g., "LEGACYVault Dashboard").
-  - `icon_url`: URL to the dashboard icon (displayed in author and thumbnail).
-  - `footer_icon_url`: URL to the footer icon.
+  - `icon_url`: Direct URL to the dashboard icon (displayed in author and thumbnail). Leave empty to use the bot's own Discord avatar.
+  - `footer_icon_url`: Direct URL to the footer icon. Leave empty to use the bot's own Discord avatar.
+
+  > Both icon URLs must be publicly reachable direct links to an image file (ending in `.png`, `.jpg`, or `.webp`) served over `https` — Discord fetches them itself and renders a broken image if it gets anything else. A GitHub `blob` page link will not work; use the `raw.githubusercontent.com` equivalent. If you leave them empty, the bot falls back to its own avatar, which always works.
 
 - **`plex_sections`**:
   - `show_all`: If `true`, all Plex library sections are shown; if `false`, only listed sections are included.
